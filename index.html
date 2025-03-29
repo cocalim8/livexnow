@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Minds Cricket Live | Scores + Live TV</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/video.js@7.8.4/dist/video-js.min.css" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: #0B0C10;
+            color: #C5C6C7;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: #1F2833;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInDown 1s;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #66FCF1, #45A29E);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1rem;
+        }
+
+        .logo-circle span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1F2833;
+        }
+
+        .header h1 {
+            color: #66FCF1;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Navigation Styles */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #C5C6C7;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: #66FCF1;
+            color: #1F2833;
+            transform: translateY(-2px);
+        }
+
+        /* Toggle Button */
+        .toggle-button {
+            background: #66FCF1;
+            color: #1F2833;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background: #45A29E;
+            transform: translateY(-2px);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+            border-bottom: 1px solid #45A29E;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #C5C6C7;
+            padding: 0.8rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: #66FCF1;
+            font-weight: bold;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #66FCF1;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #45A29E;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 1rem;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .refresh-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #45A29E;
+        }
+
+        .matches-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .match-card {
+            background: #1F2833;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 2.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #45A29E;
+            min-height: 200px;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 252, 241, 0.2);
+        }
+
+        /* Team flags and logos */
+        .team-logo {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            margin-right: 8px;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .flag-icon {
+            width: 30px;
+            height: 20px;
+            object-fit: cover;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            margin-right: 8px;
+        }
+
+        /* Format-specific styling */
+        .format-t20 {
+            border-left: 4px solid #E91E63;
+        }
+        .format-odi {
+            border-left: 4px solid #FF9800;
+        }
+        .format-test {
+            border-left: 4px solid #4CAF50;
+        }
+
+        /* TV Player Styles */
+        .tv-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1F2833;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #45A29E;
+        }
+
+        .channel-list {
+            background: #1F2833;
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .channel-item {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #2c3847;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .channel-item:hover {
+            background: #2c3847;
+        }
+
+        .channel-item.active {
+            background: #45A29E;
+            color: #1F2833;
+        }
+
+        .channel-logo {
+            width: 25px;
+            height: 18px;
+            object-fit: cover;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        /* Video Player Customization */
+        .video-js {
+            width: 100%;
+            height: 450px;
+            background: #000;
+        }
+
+        .vjs-theme-prompt {
+            --vjs-theme-primary: #66FCF1;
+            --vjs-theme-secondary: #45A29E;
+        }
+
+        .vjs-theme-prompt .vjs-big-play-button {
+            background-color: rgba(102, 252, 241, 0.8);
+            border-color: #66FCF1;
+        }
+
+        /* Match card styles */
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .match-type {
+            background: linear-gradient(135deg, #66FCF1, #45A29E);
+            color: #1F2833;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .match-date {
+            color: #C5C6C7;
+            font-size: 0.85rem;
+        }
+
+        .match-name {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #66FCF1;
+            font-size: 1.2rem;
+        }
+
+        .teams-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .team {
+            text-align: center;
+            flex: 1;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: #C5C6C7;
+        }
+
+        .vs {
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 0 10px;
+            color: #45A29E;
+        }
+
+        .score {
+            font-size: 1rem;
+            margin-top: 5px;
+            color: #66FCF1;
+        }
+
+        .match-status {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #45A29E;
+            font-weight: 600;
+        }
+
+        .status-ended {
+            color: #66FCF1;
+        }
+
+        .status-live {
+            color: #2ecc71;
+            animation: pulse 2s infinite;
+        }
+
+        .status-upcoming {
+            color: #f39c12;
+        }
+
+        .status-other {
+            color: #C5C6C7;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .venue {
+            font-size: 0.85rem;
+            color: #45A29E;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .series-name {
+            font-size: 0.9rem;
+            color: #66FCF1;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .innings-container {
+            margin-top: 15px;
+            background: rgba(31, 40, 51, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .innings-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #66FCF1;
+        }
+
+        .innings-score {
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+            color: #C5C6C7;
+        }
+
+        .no-matches {
+            text-align: center;
+            padding: 40px;
+            color: #45A29E;
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+        }
+
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 5px;
+            margin: 20px 0;
+            grid-column: 1 / -1;
+            border: 1px solid #ff6b6b;
+        }
+
+        .btn-retry {
+            background: linear-gradient(135deg, #66FCF1, #45A29E);
+            color: #1F2833;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-retry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 252, 241, 0.3);
+        }
+
+        /* Filter Controls */
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #1F2833;
+            color: #C5C6C7;
+            border: 1px solid #45A29E;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active {
+            background: #45A29E;
+            color: #1F2833;
+            font-weight: bold;
+        }
+
+        .filter-btn:hover {
+            background: #2c3847;
+        }
+
+        /* Format Sections */
+        .format-section {
+            margin-bottom: 30px;
+        }
+
+        .format-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid;
+        }
+
+        .format-header h2 {
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+
+        .format-t20-header {
+            color: #E91E63;
+            border-bottom-color: #E91E63;
+        }
+
+        .format-odi-header {
+            color: #FF9800;
+            border-bottom-color: #FF9800;
+        }
+
+        .format-test-header {
+            color: #4CAF50;
+            border-bottom-color: #4CAF50;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: #1F2833;
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+            text-align: center;
+            color: #C5C6C7;
+            border-top: 2px solid #66FCF1;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #C5C6C7;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #66FCF1;
+            transform: translateY(-2px);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: #C5C6C7;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #66FCF1;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .nav-links {
+                gap: 0.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .matches-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-js {
+                height: 250px;
+            }
+            
+            .tab-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .filter-controls {
+                justify-content: center;
+            }
+        }
+    </style>
+<link type="text/css" rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-circle">
+                <span>PM</span>
+            </div>
+            <h1>Prompt Minds Cricket</h1>
+        </div>
+        <nav class="toolbar" aria-label="Main navigation">
+            <ul class="nav-links" role="menubar">
+                <li role="menuitem"><a href="#home">Home</a></li>
+                <li role="menuitem"><a href="#about">About</a></li>
+                <li role="menuitem"><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="toggle-button" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </nav>
+    </header>
+
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="scores">Live Scores</button>
+        <button class="tab-btn" data-tab="tv">Live TV</button>
+    </div>
+
+    <div class="container">
+        <!-- Live Scores Tab -->
+        <div class="tab-content active" id="scores-tab">
+            <div class="refresh-info">
+                <div id="lastUpdated"><i class="fas fa-sync-alt"></i> Last updated: Loading...</div>
+                <div id="apiStatus"><i class="fas fa-bolt"></i> API hits used: 0/100</div>
+            </div>
+
+            <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">All Matches</button>
+                <button class="filter-btn" data-filter="live">Live</button>
+                <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                <button class="filter-btn" data-filter="recent">Recent</button>
+                <button class="filter-btn" data-filter="ipl">IPL</button>
+                <button class="filter-btn" data-filter="international">International</button>
+            </div>
+
+            <div id="matchesContainer">
+                <!-- Format sections will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Live TV Tab -->
+        <div class="tab-content" id="tv-tab">
+            <div class="tv-container">
+                <div class="video-wrapper" aria-label="Live cricket broadcast">
+                    <video id="live-tv-player" class="video-js vjs-theme-prompt" controls preload="auto">
+                        <p class="vjs-no-js">
+                            To view this video please enable JavaScript, and consider upgrading to a
+                            web browser that supports HTML5 video
+                        </p>
+                    </video>
+                </div>
+                
+                <div class="channel-list" id="channelList">
+                    <div class="channel-item" data-stream="https://example.com/stream1.m3u8">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png" class="channel-logo" alt="Star Sports 1">
+                        <span>Star Sports 1 (India)</span>
+                    </div>
+                    <div class="channel-item" data-stream="https://example.com/stream2.m3u8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png" class="channel-logo" alt="Sky Sports">
+                        <span>Sky Sports Cricket (UK)</span>
+                    </div>
+                    <div class="channel-item" data-stream="https://example.com/stream3.m3u8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Flag_of_Australia_%28converted%29.svg/1200px-Flag_of_Australia_%28converted%29.svg.png" class="channel-logo" alt="Fox Cricket">
+                        <span>Fox Cricket (Australia)</span>
+                    </div>
+                    <div class="channel-item" data-stream="https://example.com/stream4.m3u8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_the_People%27s_Republic_of_China.svg/1200px-Flag_of_the_People%27s_Republic_of_China.svg.png" class="channel-logo" alt="Willow TV">
+                        <span>Willow TV (USA)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Service</a>
+            <a href="#contact">Contact Us</a>
+        </div>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+        <p>&copy; 2023 Prompt Minds. All rights reserved.</p>
+    </footer>
+
+    <!-- Video.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/video.js@7.8.4/dist/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
+
+    <script>
+        // DOM Elements
+        const matchesContainer = document.getElementById('matchesContainer');
+        const lastUpdatedEl = document.getElementById('lastUpdated');
+        const apiStatusEl = document.getElementById('apiStatus');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const channelItems = document.querySelectorAll('.channel-item');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // Initialize Video.js player
+        const player = videojs('live-tv-player', {
+            controls: true,
+            autoplay: false,
+            preload: 'auto',
+            responsive: true,
+            fluid: true
+        });
+
+        // API Configuration
+        const API_URL = 'https://api.cricapi.com/v1/cricScore?apikey=d55f5f94-6744-40bf-bc33-f72c4e5c6c9a';
+
+        // Initialize the app
+        function init() {
+            fetchLiveMatches();
+            updateLastUpdated();
+            
+            // Set up refresh button
+            refreshBtn.addEventListener('click', () => {
+                fetchLiveMatches();
+                updateLastUpdated();
+            });
+
+            // Set up tab navigation
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    
+                    // Update active tab button
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Show corresponding tab content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-tab`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            // Set up channel selection
+            channelItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const streamUrl = item.getAttribute('data-stream');
+                    
+                    // Update active channel
+                    channelItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Change video source
+                    player.src({
+                        src: streamUrl,
+                        type: 'application/x-mpegURL'
+                    });
+                    
+                    // Play the stream
+                    player.play();
+                });
+            });
+
+            // Set up filter buttons
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.getAttribute('data-filter');
+                    
+                    // Update active filter button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Filter matches
+                    filterMatches(filter);
+                });
+            });
+
+            // Initialize with first channel
+            if (channelItems.length > 0) {
+                channelItems[0].click();
+            }
+        }
+
+        // Store all matches for filtering
+        let allMatches = [];
+
+        // Fetch live matches from API
+        async function fetchLiveMatches() {
+            try {
+                matchesContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading matches...</div>';
+                
+                const response = await fetch(API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status !== "success" || !data.data || data.data.length === 0) {
+                    throw new Error('No matches found or API error');
+                }
+                
+                allMatches = data.data;
+                renderMatches(allMatches);
+                updateApiStatus(data.info);
+                
+            } catch (error) {
+                console.error('Error fetching matches:', error);
+                showError(error);
+            }
+        }
+
+        // Filter matches based on selected filter
+        function filterMatches(filter) {
+            let filteredMatches = [];
+            
+            switch(filter) {
+                case 'live':
+                    filteredMatches = allMatches.filter(match => match.ms === "live");
+                    break;
+                case 'upcoming':
+                    filteredMatches = allMatches.filter(match => match.ms === "fixture");
+                    break;
+                case 'recent':
+                    filteredMatches = allMatches.filter(match => match.ms === "result");
+                    break;
+                case 'ipl':
+                    filteredMatches = allMatches.filter(match => match.series.includes("Indian Premier League"));
+                    break;
+                case 'international':
+                    filteredMatches = allMatches.filter(match => 
+                        match.t1img.includes("webp") || match.t2img.includes("webp") // Country flags usually webp
+                    );
+                    break;
+                default:
+                    filteredMatches = allMatches;
+            }
+            
+            renderMatches(filteredMatches);
+        }
+
+        // Show error message
+        function showError(error) {
+            matchesContainer.innerHTML = `
+                <div class="error">
+                    Failed to load matches: ${error.message}
+                    <button class="btn-retry" onclick="fetchLiveMatches()">Retry</button>
+                </div>
+            `;
+        }
+
+        // Render all matches organized by format
+        function renderMatches(matches) {
+            if (!matches || matches.length === 0) {
+                matchesContainer.innerHTML = '<div class="no-matches"><i class="fas fa-trophy"></i> No matches found for this filter</div>';
+                return;
+            }
+
+            // Sort matches: live first, then upcoming, then recent
+            matches.sort((a, b) => {
+                if (a.ms === "live") return -1;
+                if (b.ms === "live") return 1;
+                if (a.ms === "fixture") return -1;
+                if (b.ms === "fixture") return 1;
+                return 0;
+            });
+
+            // Group matches by format
+            const t20Matches = matches.filter(match => match.matchType === "t20");
+            const odiMatches = matches.filter(match => match.matchType === "odi");
+            const testMatches = matches.filter(match => match.matchType === "test");
+
+            let html = '';
+
+            // T20 Section
+            if (t20Matches.length > 0) {
+                html += `
+                    <div class="format-section">
+                        <div class="format-header format-t20-header">
+                            <i class="fas fa-bolt"></i>
+                            <h2>T20 Matches</h2>
+                        </div>
+                        <div class="matches-container">
+                            ${t20Matches.map(match => createMatchCard(match)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // ODI Section
+            if (odiMatches.length > 0) {
+                html += `
+                    <div class="format-section">
+                        <div class="format-header format-odi-header">
+                            <i class="fas fa-list-ol"></i>
+                            <h2>ODI Matches</h2>
+                        </div>
+                        <div class="matches-container">
+                            ${odiMatches.map(match => createMatchCard(match)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Test Section
+            if (testMatches.length > 0) {
+                html += `
+                    <div class="format-section">
+                        <div class="format-header format-test-header">
+                            <i class="fas fa-star"></i>
+                            <h2>Test Matches</h2>
+                        </div>
+                        <div class="matches-container">
+                            ${testMatches.map(match => createMatchCard(match)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            matchesContainer.innerHTML = html || '<div class="no-matches"><i class="fas fa-trophy"></i> No matches found for this filter</div>';
+        }
+
+        // Create HTML for a single match card
+        function createMatchCard(match) {
+            // Determine status class
+            let statusClass = 'status-other';
+            if (match.ms === "live") {
+                statusClass = 'status-live';
+            } else if (match.ms === "fixture") {
+                statusClass = 'status-upcoming';
+            } else if (match.ms === "result") {
+                statusClass = 'status-ended';
+            }
+
+            // Format date
+            const matchDate = new Date(match.dateTimeGMT);
+            const formattedDate = matchDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Clean team names by removing brackets
+            const team1Name = match.t1.replace(/\[.*?\]/g, '').trim();
+            const team2Name = match.t2.replace(/\[.*?\]/g, '').trim();
+
+            // Determine format class
+            const formatClass = `format-${match.matchType}`;
+
+            return `
+                <div class="match-card ${formatClass}" data-status="${match.ms}" data-series="${match.series}">
+                    <div class="match-header">
+                        <span class="match-type">${match.matchType.toUpperCase()}</span>
+                        <span class="match-date">${formattedDate}</span>
+                    </div>
+                    
+                    <h3 class="match-name">${team1Name} vs ${team2Name}</h3>
+                    
+                    <div class="teams-container">
+                        <div class="team">
+                            <div class="team-info">
+                                <img src="${match.t1img}" 
+                                     alt="${team1Name}" class="team-logo"
+                                     loading="lazy">
+                                <span class="team-name">${team1Name}</span>
+                            </div>
+                            <div class="score">${match.t1s || '-'}</div>
+                        </div>
+                        
+                        <div class="vs">vs</div>
+                        
+                        <div class="team">
+                            <div class="team-info">
+                                <img src="${match.t2img}" 
+                                     alt="${team2Name}" class="team-logo"
+                                     loading="lazy">
+                                <span class="team-name">${team2Name}</span>
+                            </div>
+                            <div class="score">${match.t2s || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="match-status ${statusClass}">
+                        <i class="fas ${statusClass === 'status-live' ? 'fa-play-circle' : 
+                                      statusClass === 'status-upcoming' ? 'fa-clock' : 'fa-flag-checkered'}"></i> 
+                        ${match.status}
+                    </div>
+                    
+                    <div class="series-name">${match.series}</div>
+                </div>
+            `;
+        }
+
+        // Update last updated time
+        function updateLastUpdated() {
+            const now = new Date();
+            lastUpdatedEl.innerHTML = `<i class="fas fa-sync-alt"></i> Last updated: ${now.toLocaleTimeString()}`;
+        }
+
+        // Update API status info
+        function updateApiStatus(info) {
+            apiStatusEl.innerHTML = `<i class="fas fa-bolt"></i> API hits used: ${info.hitsUsed}/${info.hitsLimit}`;
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+<script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
